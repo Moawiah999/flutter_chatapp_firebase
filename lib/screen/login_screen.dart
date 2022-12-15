@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mychatapp/constant/constant.dart';
+import 'package:mychatapp/screen/chatscreen.dart';
 import 'package:mychatapp/screen/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widget/custom_boutton.dart';
@@ -9,9 +10,11 @@ import 'package:firebase_core/firebase_core.dart';
 class Login_Screen extends StatelessWidget {
   Login_Screen({super.key});
   static String id = "Registrationscreen";
-  GlobalKey<FormState> myform = GlobalKey();
+  GlobalKey<FormState> Formkey = GlobalKey();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  bool isloding = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +22,7 @@ class Login_Screen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Form(
-          key: myform,
+          key: Formkey,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
@@ -62,17 +65,18 @@ class Login_Screen extends StatelessWidget {
                   height: 30,
                 ),
                 Custom_Boutton(
+                  text: "login",
                   ontap: () async {
-                    if (myform.currentState!.validate()) {
-                      try {
-                        UserCredential myuser = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text);
-                      } catch (e) {}
+                    try {
+                      loginuser(context, "Login done");
+
+                      Navigator.pushNamed(context, ChatScreen.id,
+                          arguments: emailController);
+                    } catch (e) {
+                      print("@@@@@@@@@@@@@@@@@@");
+                      print(e);
                     }
                   },
-                  text: "login",
                 ),
                 SizedBox(
                   height: 20,
@@ -102,6 +106,25 @@ class Login_Screen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> loginuser(BuildContext context, String message) async {
+    UserCredential myuser = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

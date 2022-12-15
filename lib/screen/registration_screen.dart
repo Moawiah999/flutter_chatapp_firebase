@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mychatapp/screen/chatscreen.dart';
 import '../constant/constant.dart';
 import '../widget/custom_boutton.dart';
 import '../widget/custtom_text_field.dart';
@@ -85,6 +86,15 @@ class _Registration_ScreenState extends State<Registration_Screen> {
                         try {
                           await registrauser(
                               context, "The Registration is done");
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return ChatScreen();
+                          //     },
+                          //   ),
+                          // );
+                          Navigator.pushNamed(context, ChatScreen.id);
                         } catch (e) {
                           showSnackBar(
                               context, "There is an account with this email");
